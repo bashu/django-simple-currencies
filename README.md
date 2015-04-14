@@ -1,79 +1,105 @@
-Introduction
-------------
+django-simple-currencies
+===
 
-django-currencies allows you to define different currencies, and includes
-template tags/filters to allow easy conversion between them.
-Usage
+django-simple-currencies allows you to define different currencies, and includes template tags / filters to allow easy conversion between them.
 
-Once you have everything set up (read the included INSTALL.txt and
-docs/), you will be able to use the following code in your templates:
+[![Latest Version](https://pypip.in/version/django-simple-currencies/badge.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
+[![Downloads](https://pypip.in/download/django-simple-currencies/badge.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
+[![License](https://pypip.in/license/django-simple-currencies/badge.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
 
-    {% change_currency [price] [currency_code] %}
+## Setup
 
-    # i.e:
+Either clone this repository into your project, or install with ```pip install django-simple-currencies```
 
-    {% change_currency product.price "USD" %}
+You'll need to add ```currencies``` to ```INSTALLED_APPS``` in your project's ``settings.py`` file :
 
-    # or if we have the currencies.context_processors.currencies
-    # available:
+```python
+INSTALLED_APPS = (
+    ...
+    'currencies',
+)
+```
 
-    {% change_currency product.price CURRENCY.code %}
+Add ```currencies.middleware.CurrencyMiddleware``` to ```MIDDLEWARE_CLASSES```, must be after ```django.contrib.sessions.middleware.SessionMiddleware``` : 
 
-or use the filter:
+```python
+MIDDLEWARE_CLASSES = (
+    ...    
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'currencies.middleware.CurrencyMiddleware',  # must be after 'SessionMiddleware'
+    ...
+)
+```
 
-    {{ [price]|currency:[currency] }}
+If you're going to use site-wide caching, add ```currencies.middleware.CacheCurrencyMiddleware```, but before ```django.middleware.cache.FetchFromCacheMiddleware``` : 
 
-    # i.e.:
+```python
+MIDDLEWARE_CLASSES = (
+    ...
+    'currencies.middleware.CacheCurrencyMiddleware',  # must be before 'FetchFromCacheMiddleware'
+    'django.middleware.cache.FetchFromCacheMiddleware',    
+)
+```
 
-    {{ product.price|currency:"USD" }}
+Be sure you have the `django.core.context_processors.request` context processor listed in ```TEMPLATE_CONTEXT_PROCESSORS``` : 
 
-or set the CURRENCY context variable with a POST to the included view:
+```python
+TEMPLATE_CONTEXT_PROCESSORS = [
+    ...
+    "django.core.context_processors.request"
+]
+```
 
-    {% url currencies_set_currency [currency] %}
+And don't forget to add this line to your site's root URLConf :
 
+```python
+url(r'^currencies/', include('currencies.urls')),
+```
 
-OpenExchangeRates integration
------------------------------
-
-django-currencies has builtin integration with openexchangerates.org.
-
-You will need to specify your API key in your settings file:
-
-    OPENEXCHANGERATES_APP_ID = "c2b2efcb306e075d9c2f2d0b614119ea"
-
-You will then be able to use the management commands "initcurrencies" and "updatecurrencies".
-The former will create any currency that exists on openexchangerates.org with a default
-factor of 1.0. It is completely optional and does not require an API key. A list of currency codes may be supplied to
-limit the currencies that will be initialised.
-
-The updatecurrencies management command will update all your currencies against the rates
-returned by openexchangerates.org. Any missing currency will be left untouched.
-
-The updatecurrencysymbols command will add the currency symbol (if missing) to each currency present. Make sure that
-your symbol and name columns are set to UTF-8.
-
-
-Source Code
------------
-
-The source is kept under git version control at https://github.com/panosl/django-currencies
-
-You can get it by cloning the repository:
-
-    git clone git://github.com/panosl/django-currencies.git
+Then run ```./manage.py syncdb``` to create the required database tables
 
 
-Documentation
--------------
+## Configuration
 
-You can browse it online here: http://readthedocs.org/projects/django-currencies/
+django-simple-currencies has built-in integration with [Open Exchange Rates](http://openexchangerates.org/)
 
+You will need to specify your API key in your ```settings.py``` file :
 
-Running Tests
--------------
+```python
+OPENEXCHANGERATES_APP_ID = "c2b2efcb306e075d9c2f2d0b614119ea"
+```
 
-I'm using nose along with nosedjango
+You will then be able to use the management commands ``currencies`` and ``update_rates``. The former will import any currencies that are defined on [Open Exchange Rates](http://openexchangerates.org/). You can selectively import currencies, for example bellow command will import USD and EUR currencies only :
 
-The settings.py is inside the tests/ directory, so you'll need to cd to it, and:
+```shell
+./manage.py currencies --import=USD --import=EUR
+```
 
-    nosetests -v --with-django
+The ``update_rates`` management command will update all your currencies against the rates returned by [Open Exchange Rates](http://openexchangerates.org/). Any missing currency will be left untouched.
+
+## Usage
+
+First of all, load the ```currencies``` in every template where you want to use it :
+
+    {% load currencies %}
+    
+to get a list of the active currencies :
+
+    {% get_currencies as CURRENCIES %}
+    
+to get the currently set currency :
+
+    {% get_current_currency as CURRENCY %}
+    
+and then to convert to a given currency :
+
+    {% change_currency [amount] [currency_code] %}
+
+or use the filter :
+
+    {{ [amount]|currency:[currency_code] }}
+
+Please see ```example``` application. This application is used to manually test the functionalities of this package. This also serves as a good example.
+
+You need only Django 1.4 or above to run that. It might run on older versions but that is not tested.
+
