@@ -19,10 +19,10 @@ def set_currency(request):
             next = '/'
 
     response = HttpResponseRedirect(next)
-    if code and Currency.active.filter(code=code).exists():
+    if currency_code and Currency.active.filter(code=currency_code).exists():
         if hasattr(request, 'session'):
-            request.session[SESSION_KEY] = code
+            request.session[SESSION_KEY] = currency_code
         else:
-            response.set_cookie(SESSION_KEY, code)
+            response.set_cookie(SESSION_KEY, currency_code)
     return response
 
