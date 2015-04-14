@@ -1,0 +1,23 @@
+{% load currency %}
+<html>
+    <head></head>
+    <body>
+      {% get_current_currency as CURRENCY %}
+      {% get_currencies as CURRENCIES %}
+      {% if CURRENCY and CURRENCIES %}
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ CURRENCY.symbol }} {{ CURRENCY.name }} <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+          {% for curr in CURRENCIES %}
+          <li><a href="#" onclick="document.getElementById('setcurrency_{{ curr.code|lower }}').submit();">{{ curr.code|upper }}</a></li>
+          <form id="setcurrency_{{ curr.code|lower }}" class="hidden" method="POST" action="{% url 'currencies_set_currency' %}">{% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}" />
+            <input type="hidden" name="currency_code" value="{{ curr.code }}" />
+          </form>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endif %}
+      $100 is equal to {% change_currency 100 CURRENCY.code %} in {{ CURRENCY.name }}
+    </body>
+</html>
