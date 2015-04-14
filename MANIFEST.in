@@ -1,6 +1,4 @@
 include LICENSE
 include README.md
 recursive-include currencies/locale *
-recursive-include currencies/management *
-recursive-include currencies/migrations *
-recursive-include currencies/templatetags *
+

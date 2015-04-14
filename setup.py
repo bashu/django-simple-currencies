@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
@@ -7,14 +7,14 @@ README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='django-easy-currencies',
+    name='django-simple-currencies',
     version='0.1',
-    packages=['currencies'],
+    packages=find_packages(exclude=['example']),
     include_package_data=True,
     license='BSD License',    
     description='Currency, exchange rate and conversions support for django projects',
     long_description=README,
-    url='https://github.com/bashu/django-easy-currencies',
+    url='https://github.com/bashu/django-simple-currencies',
     author='Basil Shubin',
     author_email='basil.shubin@gmail.com',
     install_requires=[
