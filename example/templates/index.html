@@ -5,19 +5,19 @@
       {% get_current_currency as CURRENCY %}
       {% get_currencies as CURRENCIES %}
       {% if CURRENCY and CURRENCIES %}
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ CURRENCY.symbol }} {{ CURRENCY.name }} <span class="caret"></span></a>
-        <ul class="dropdown-menu" role="menu">
+      <form id="currency_switcher" method="POST" action="{% url 'currencies_set_currency' %}">{% csrf_token %}
+        <select name="currency_code" onchange="document.getElementById('currency_switcher').submit()">
           {% for curr in CURRENCIES %}
-          <li><a href="#" onclick="document.getElementById('setcurrency_{{ curr.code|lower }}').submit();">{{ curr.code|upper }}</a></li>
-          <form id="setcurrency_{{ curr.code|lower }}" class="hidden" method="POST" action="{% url 'currencies_set_currency' %}">{% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}" />
-            <input type="hidden" name="currency_code" value="{{ curr.code }}" />
-          </form>
+          <option value="{{ curr.code }}" {% ifequal curr.code CURRENCY.code %}selected="selected"{% endifequal %}>
+            {{ curr.symbol }} {{ curr.name }}
+          </option>
           {% endfor %}
-        </ul>
-      </li>
+        </select>
+        <noscript>
+          <input type="submit" value="SET" />
+        </noscript>
+      </form>      
       {% endif %}
-      $100 is equal to {% change_currency 100 CURRENCY.code %} in {{ CURRENCY.name }}
+      {{ 100|currency:"USD" }} USD is equal to {% change_currency 100 CURRENCY.code %} in {{ CURRENCY.code }}
     </body>
 </html>
