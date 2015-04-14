@@ -13,7 +13,8 @@ from ...models import Currency as C
 
 APP_ID = getattr(settings, "OPENEXCHANGERATES_APP_ID", None)
 if APP_ID is None:
-    raise ImproperlyConfigured("You need to set the 'OPENEXCHANGERATES_APP_ID' setting to your openexchangerates.org api key")
+    raise ImproperlyConfigured(
+        "You need to set the 'OPENEXCHANGERATES_APP_ID' setting to your openexchangerates.org api key")
 
 
 class Command(NoArgsCommand):
@@ -30,7 +31,7 @@ class Command(NoArgsCommand):
         try:
             code = C._default_manager.get(is_base=True).code
         except C.DoesNotExist:
-            code = 'USD'
+            code = 'USD'  # fallback to default
 
         l = client.latest(base=code)
 
