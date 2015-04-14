@@ -79,9 +79,9 @@ The ``update_rates`` management command will update all your currencies against 
 
 ## Usage
 
-First of all, load the ```currencies``` in every template where you want to use it :
+First of all, load the ```currency``` in every template where you want to use it :
 
-    {% load currencies %}
+    {% load currency %}
     
 to get a list of the active currencies :
 
