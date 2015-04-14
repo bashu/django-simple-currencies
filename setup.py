@@ -1,48 +1,34 @@
-#!/usr/bin/env python
-from distutils.core import setup
 import os
-from currencies import __version__
+from setuptools import setup
 
+README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
-# Compile the list of packages available, because distutils doesn't have
-# an easy way to do this.
-packages, data_files = [], []
-root_dir = os.path.dirname(__file__)
-if root_dir:
-    os.chdir(root_dir)
+# allow setup.py to be run from any path
+os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
-for dirpath, dirnames, filenames in os.walk('currencies'):
-    # Ignore dirnames that start with '.'
-    for i, dirname in enumerate(dirnames):
-        if dirname.startswith('.'): del dirnames[i]
-    if '__init__.py' in filenames:
-        pkg = dirpath.replace(os.path.sep, '.')
-        if os.path.altsep:
-            pkg = pkg.replace(os.path.altsep, '.')
-        packages.append(pkg)
-    elif filenames:
-        prefix = dirpath[11:] # Strip "currencies/" or "currencies\"
-        for f in filenames:
-            data_files.append(os.path.join(prefix, f))
-
-data_files.append("management/commands/currencies.json")
-
-setup(name='django-currencies',
-    version=__version__,
-    description='Adds support for multiple currencies as a Django application.',
-    long_description=open('README.md').read(),
-    author='Panos Laganakos',
-    author_email='panos.laganakos@gmail.com',
-    url='https://github.com/panosl/django-currencies',
-    package_dir={'currencies': 'currencies'},
-    packages=packages,
-    package_data={'currencies': data_files},
-    classifiers=['Development Status :: 4 - Beta',
+setup(
+    name='django-easy-currencies',
+    version='0.1',
+    packages=['currencies'],
+    include_package_data=True,
+    license='BSD License',    
+    description='Currency, exchange rate and conversions support for django projects',
+    long_description=README,
+    url='https://github.com/bashu/django-easy-currencies',
+    author='Basil Shubin',
+    author_email='basil.shubin@gmail.com',
+    install_requires=[
+        'django-classy-tags',
+        'openexchangerates',
+    ],      
+    classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Topic :: Utilities'],
-    )
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',          
+    ],
+)
