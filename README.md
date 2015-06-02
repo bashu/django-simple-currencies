@@ -3,9 +3,9 @@ django-simple-currencies
 
 django-simple-currencies allows you to define different currencies, and includes template tags / filters to allow easy conversion between them.
 
-[![Latest Version](https://pypip.in/version/django-simple-currencies/badge.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
-[![Downloads](https://pypip.in/download/django-simple-currencies/badge.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
-[![License](https://pypip.in/license/django-simple-currencies/badge.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
+[![Latest Version](https://img.shields.io/pypi/v/django-simple-currencies.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
+[![Downloads](https://img.shields.io/pypi/dm/django-simple-currencies.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
+[![License](https://img.shields.io/github/license/bashu/django-simple-currencies.svg)](https://pypi.python.org/pypi/django-simple-currencies/)
 
 ## Setup
 
