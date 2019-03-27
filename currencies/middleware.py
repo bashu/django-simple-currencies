@@ -2,12 +2,13 @@
 
 from django.conf import settings
 from django.utils.cache import patch_vary_headers
+from django.utils.deprecation import MiddlewareMixin
 
 from .utils import get_currency_code
 from .conf import SESSION_KEY
 
 
-class CurrencyMiddleware(object):
+class CurrencyMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         if not hasattr(request, 'session'):
@@ -18,7 +19,7 @@ class CurrencyMiddleware(object):
             request.session[SESSION_KEY] = get_currency_code(False)
 
 
-class CacheCurrencyMiddleware(object):
+class CacheCurrencyMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         request.META['HTTP_X_CURRENCY'] = get_currency_code(
